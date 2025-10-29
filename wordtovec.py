@@ -79,3 +79,4 @@ def train_skipgram(training_pairs, word_to_index, vocab_size, W_input, W_output,
 def get_embedding(word, word_to_index, W_input): #get embedings for 1word from corpus
     idx=word_to_index[word]
     return W_input[idx]
+
