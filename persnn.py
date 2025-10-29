@@ -1,7 +1,7 @@
 #activations
-def relu(x, alpha=0.01):
+def relu(x, alpha=0.001):
     return [xi if xi > 0 else alpha * xi for xi in x]
-def relu_der(x, alpha=0.01):
+def relu_der(x, alpha=0.001):
     return [1 if xi > 0 else alpha for xi in x]
 #list operation support
 def vector_sub(a, b):
