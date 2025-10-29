@@ -1,8 +1,8 @@
 #activations
-def relu(x, alpha=0.01):
-    return [xi if xi > 0 else alpha * xi for xi in x]
-def relu_der(x, alpha=0.01):
-    return [1 if xi > 0 else alpha for xi in x]
+def relu(x):
+    return [max(0, v) for v in x]
+def relu_der(x):
+    return 1 if x>0 else 0
 #list operation support
 def vector_sub(a, b):
     return [x-y for x, y in zip(a, b)]
