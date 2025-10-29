@@ -41,7 +41,7 @@ while run:
     if options=="1":
         exit()
     elif options=="help":
-        print(colored("1.exit\n2.load input\n3.create wb for prun\n4.show data\n5.run norm\n6.run train\n7.delete prun wb\n8.delete input\n9.clear", "black"))
+        print(colored("1.exit\n2.load input\n3.create wb for prun\n4.show data\n5.run norm\n6.run train\n7.delete prun wb\n8.delete input\n9.clear", "grey"))
     elif options=="2":
         uinput=input("uinput> ")
         tkinput=uinput.split()
@@ -110,7 +110,7 @@ if run_train:
     for i in range(epoch):
         _, _, files=next(os.walk("data/inps"))
         file_count=(len(files))
-        for j in range(file_count//2):
+        for j in range(file_count):
             with open(f'data/inps/inp{j}.txt', 'r') as file:
                 inp=file.read().splitlines()
                 inp1, inp2=inp
@@ -121,7 +121,7 @@ if run_train:
             training_pairs2=generate_training_pairs(inp2, 4)
             wtvw21, wtvw22=initialize_weights(vocab_size2, 32)
             wtvw11, wtvw12=train_skipgram(training_pairs1, word_to_index1, vocab_size1, wtvw11, wtvw12, 32, 0.001, 1000)
-            wtvw21, wtvw22=train_skipgram(training_pairs2, word_to_index2, vocab_size2, wtvw22, wtvw22, 32, 0.001, 1000)
+            wtvw21, wtvw22=train_skipgram(training_pairs2, word_to_index2, vocab_size2, wtvw21, wtvw22, 32, 0.001, 1000)
             for k in range(len(inp1)):
                 wtv_inp=get_embedding(inp1[k], word_to_index1, wtvw11)
                 wtv_out=get_embedding(inp2[k], word_to_index2, wtvw21)
@@ -129,7 +129,6 @@ if run_train:
                 pw, pb=backward(wtv_inp, out, wtv_out, pw, pb, 0.0001, norml, real)
             with open('data/prunwb.pkl', 'wb') as file:
                 pickle.dump({'w': pw, 'b': pb}, file)
-            print(pw, pb)
         if i%1000000==0:
             print(i)
             #do mean pooling or additional zeros for the same lenght of wtv_inp and wtv_out
