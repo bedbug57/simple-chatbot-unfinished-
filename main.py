@@ -54,7 +54,7 @@ while run:
             for j in range(int(outset[i])):
                 c=[]
                 for k in range(int(inset[i])):
-                    a=uniform(-1, 1)
+                    a=uniform(0, 2)-1
                     d=round(a, 5)
                     c.append(d)
                 e.append(c)
@@ -62,7 +62,7 @@ while run:
         for i in range(6):
             d=[]
             for j in range(int(outset[i])):
-                a=uniform(-1, 1) 
+                a=uniform(0, 2)-1
                 c=round(a, 5)
                 d.append(c)
             pb.append(d)
@@ -129,7 +129,7 @@ if run_train:
                 pw, pb=backward(wtv_inp, out, wtv_out, pw, pb, 0.0001, norml, real)
             with open('data/prunwb.pkl', 'wb') as file:
                 pickle.dump({'w': pw, 'b': pb}, file)
-        if i%1000000==0:
+        if i%10000==0:
             print(i)
             #do mean pooling or additional zeros for the same lenght of wtv_inp and wtv_out
             #make a program at the end that takes every output as a root and predicts next few words
@@ -145,3 +145,4 @@ if run_norm:
         out, norml, real=forward(wtv_inp, pw, pb, inset, outset)
         final_out.append(out)
     print(final_out)
+
