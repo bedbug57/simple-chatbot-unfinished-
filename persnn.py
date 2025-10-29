@@ -46,25 +46,25 @@ def backward(input_, out, y, w, b, rate, norml, real):
     
     w6_T=transpose(w[5])
     delta5_part=dot(w6_T, delta6)
-    delta5=[delta5_part[i]*relu_der(real[0][i]) for i in range(len(delta5_part))]
+    delta5=[delta5_part[i]*relu_der(real[0])[i] for i in range(len(delta5_part))]
 
     w5_T=transpose(w[4])
     delta4_part=dot(w5_T, delta5)
-    delta4=[delta4_part[i]*relu_der(real[1][i]) for i in range(len(delta4_part))]
+    delta4=[delta4_part[i]*relu_der(real[1])[i] for i in range(len(delta4_part))]
 
     w4_T=transpose(w[3])
     delta3_part=dot(w4_T, delta4)
-    delta3=[delta3_part[i]*relu_der(real[2][i]) for i in range(len(delta3_part))]
+    delta3=[delta3_part[i]*relu_der(real[2])[i] for i in range(len(delta3_part))]
 
 
     w3_T=transpose(w[2])
     delta2_part=dot(w3_T, delta3)
-    delta2=[delta2_part[i]*relu_der(real[3][i]) for i in range(len(delta2_part))]
+    delta2=[delta2_part[i]*relu_der(real[3])[i] for i in range(len(delta2_part))]
 
 
     w2_T=transpose(w[1])
     delta1_part=dot(w2_T, delta2)
-    delta1=[delta1_part[i]*relu_der(real[4][i]) for i in range(len(delta1_part))]
+    delta1=[delta1_part[i]*relu_der(real[4])[i] for i in range(len(delta1_part))]
 
     for i in range(len(w[5])):
         for j in range(len(w[5][0])):
