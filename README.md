@@ -8,4 +8,4 @@
  | |-wordtovec.py
  |-data
  | |-inps
- | | |-inp0.txt #you can add maore files with different numbers. file should have 2lines: input and expected output
+ | | |-inp0.txt #you can add more files with different numbers. file should have 2lines: input and expected output
