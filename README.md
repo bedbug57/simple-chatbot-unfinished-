@@ -1,7 +1,7 @@
 # simple-chatbot-unfinished-
  word2vec skipgram + small neural net
 
- folder menagement should look like this:
+ folder menagement should look like this(see raw file):
  |-program
  | |-main.py
  | |-persnn.py
