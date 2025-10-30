@@ -41,8 +41,8 @@ def generate_training_pairs(sentences, window_size):
     return training_pairs
 
 def initialize_weights(vocab_size, embedding_size):
-    w_input=[[random.uniform(-1, 1) for _ in range(embedding_size)] for _ in range(vocab_size)]#learnable list of numbers that symbolise a word based on index given to it and then learning this word for each item in list, represents word itself
-    w_output=[[random.uniform(-1, 1) for _ in range(vocab_size)] for _ in range(embedding_size)]#learnable list thats used in nn that calculates meaning of given word based on guessing what neightbour words it has and then comparing it to the actual neightbour words
+    w_input=[[random.uniform(-0.1, 0.1) for _ in range(embedding_size)] for _ in range(vocab_size)]#learnable list of numbers that symbolise a word based on index given to it and then learning this word for each item in list, represents word itself
+    w_output=[[random.uniform(-0.1, 0.1) for _ in range(vocab_size)] for _ in range(embedding_size)]#learnable list thats used in nn that calculates meaning of given word based on guessing what neightbour words it has and then comparing it to the actual neightbour words
     return w_input, w_output
 
 def train_skipgram(training_pairs, word_to_index, vocab_size, W_input, W_output, embedding_size, learning_rate, epochs):
