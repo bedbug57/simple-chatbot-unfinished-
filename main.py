@@ -126,7 +126,7 @@ if run_train:
                 wtv_inp=get_embedding(inp1[k], word_to_index1, wtvw11)
                 wtv_out=get_embedding(inp2[k], word_to_index2, wtvw21)
                 out, norml, real=forward(wtv_inp, pw, pb, inset, outset)
-                pw, pb=backward(wtv_inp, out, wtv_out, pw, pb, 0.0001, norml, real)
+                pw, pb=backward(wtv_inp, out, wtv_out, pw, pb, 0.00001, norml, real)
             with open('data/prunwb.pkl', 'wb') as file:
                 pickle.dump({'w': pw, 'b': pb}, file)
         if i%100==0:
@@ -145,3 +145,4 @@ if run_norm:
         out, norml, real=forward(wtv_inp, pw, pb, inset, outset)
         final_out.append(out)
     print(final_out)
+
