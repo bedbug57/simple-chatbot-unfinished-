@@ -32,6 +32,9 @@ except:
     errors.append("prunwb")
 if len(errors)>0:
     print(f"you can't even read {errors} correctly, bitch")
+def mean_pool(embeddings):
+    if not embeddings: return [0.0]*32
+    return [sum(col)/len(embeddings) for col in zip(*embeddings)]
 
 run=True
 run_train=False
@@ -122,27 +125,24 @@ if run_train:
             wtvw21, wtvw22=initialize_weights(vocab_size2, 32)
             wtvw11, wtvw12=train_skipgram(training_pairs1, word_to_index1, vocab_size1, wtvw11, wtvw12, 32, 0.001, 1000)
             wtvw21, wtvw22=train_skipgram(training_pairs2, word_to_index2, vocab_size2, wtvw21, wtvw22, 32, 0.001, 1000)
-            for k in range(len(inp1)):
-                wtv_inp=get_embedding(inp1[k], word_to_index1, wtvw11)
-                wtv_out=get_embedding(inp2[k], word_to_index2, wtvw21)
-                out, norml, real=forward(wtv_inp, pw, pb, inset, outset)
-                pw, pb=backward(wtv_inp, out, wtv_out, pw, pb, 0.00001, norml, real)
+            wtv_inp_np=[get_embedding(inp1[k], word_to_index1, wtvw11) for k in range(len(inp1))]
+            wtv_out_np=[get_embedding(inp2[k], word_to_index2, wtvw21) for k in range(len(inp2))]
+            wtv_inp_p=mean_pool(wtv_inp_np)
+            wtv_out_p=mean_pool(wtv_out_np)
+            out, norml, real=forward(wtv_inp_p, pw, pb, inset, outset)
+            pw, pb=backward(wtv_inp_p, out, wtv_out_p, pw, pb, 0.0001, norml, real)
             with open('data/prunwb.pkl', 'wb') as file:
                 pickle.dump({'w': pw, 'b': pb}, file)
         if i%100==0:
             print(i)
-            #do mean pooling or additional zeros for the same lenght of wtv_inp and wtv_out
-            #make a program at the end that takes every output as a root and predicts next few words
 
 if run_norm:
     word_list1, word_to_index1, index_to_word1, vocab_size1=build_vocab(tkinput)
     training_pairs1=generate_training_pairs(uinput, 4)
     wtvw11, wtvw12=initialize_weights(vocab_size1, 32)
     wtvw11, wtvw12=train_skipgram(training_pairs1, word_to_index1, vocab_size1, wtvw11, wtvw12, 32, 0.001, 1000)
-    final_out=[]
-    for k in range(len(tkinput)):
-        wtv_inp=get_embedding(tkinput[k], word_to_index1, wtvw11)
-        out, norml, real=forward(wtv_inp, pw, pb, inset, outset)
-        final_out.append(out)
-    print(final_out)
+    word_embs=[get_embedding(tkinput[k], word_to_index1, wtvw11) for k in range(len(tkinput))]
+    wtv_inp=mean_pool(word_embs) 
+    out, norml, real=forward(wtv_inp, pw, pb, inset, outset)
+    print(out)
 
