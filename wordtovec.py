@@ -1,8 +1,8 @@
-import random
-import math
+from random import uniform
+from math import exp
 
 def softmax(x): #turn a list into probality(kinda weird but works similiar to ReLU)
-    e_x=[math.exp(i) for i in x]
+    e_x=[exp(i) for i in x]
     sum_e=sum(e_x)
     return [j/sum_e for j in e_x]
 
@@ -25,8 +25,8 @@ def build_vocab(sentence):
         word_set.add(word)
     word_list=list(word_set)
     #words go into a map and a matching number comes out(map={word[0]: number[0], word[1]:number[1]...}), map is based on word_list, it return an INDEX that will be used with w1(w1[word_to_index])
-    word_to_index={word: i for i, word in enumerate(word_list) } #words->neural net
-    index_to_word={i: word for i, word in enumerate(word_list) } #neural net->words
+    word_to_index={word: i for i, word in enumerate(word_list)} #words->neural net
+    index_to_word={i: word for i, word in enumerate(word_list)} #neural net->words
     vocab_size=len(word_list)
     return word_list, word_to_index, index_to_word, vocab_size
 
@@ -41,8 +41,8 @@ def generate_training_pairs(sentences, window_size):
     return training_pairs
 
 def initialize_weights(vocab_size, embedding_size):
-    w_input=[[random.uniform(-0.1, 0.1) for _ in range(embedding_size)] for _ in range(vocab_size)]#learnable list of numbers that symbolise a word based on index given to it and then learning this word for each item in list, represents word itself
-    w_output=[[random.uniform(-0.1, 0.1) for _ in range(vocab_size)] for _ in range(embedding_size)]#learnable list thats used in nn that calculates meaning of given word based on guessing what neightbour words it has and then comparing it to the actual neightbour words
+    w_input=[[uniform(-1, 1) for _ in range(embedding_size)] for _ in range(vocab_size)]#learnable list of numbers that symbolise a word based on index given to it and then learning this word for each item in list, represents word itself
+    w_output=[[uniform(-1, 1) for _ in range(vocab_size)] for _ in range(embedding_size)]#learnable list thats used in nn that calculates meaning of given word based on guessing what neightbour words it has and then comparing it to the actual neightbour words
     return w_input, w_output
 
 def train_skipgram(training_pairs, word_to_index, vocab_size, W_input, W_output, embedding_size, learning_rate, epochs):
@@ -79,4 +79,3 @@ def train_skipgram(training_pairs, word_to_index, vocab_size, W_input, W_output,
 def get_embedding(word, word_to_index, W_input): #get embedings for 1word from corpus
     idx=word_to_index[word]
     return W_input[idx]
-

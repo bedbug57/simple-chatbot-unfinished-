@@ -103,4 +103,3 @@ def backward(input_, out, y, w, b, rate, norml, real):
         b[0][i]-=rate*delta1[i]
 
     return w, b
-
