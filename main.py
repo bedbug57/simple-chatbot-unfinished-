@@ -33,7 +33,6 @@ except:
     errors.append("prunwb")
 if len(errors)>0:
     print(f"you can't even read {errors} correctly, bitch")
-
 def get_zero_embedding(dim=32):
     return [0.0]*dim
 def cosine_similarity(a, b):
@@ -52,9 +51,6 @@ def find_closest_word(vec, W_input, index_to_word):
             best_sim=sim
             best_word=index_to_word[idx]
     return best_word, best_sim
-def mean_pool(embeddings):
-    if not embeddings: return [0.0]*32
-    return [sum(col)/len(embeddings) for col in zip(*embeddings)]
 
 run=True
 run_train=False
@@ -152,7 +148,6 @@ if run_train:
             wtvw21, wtvw22=initialize_weights(vocab_size2, 32)
             wtvw11, wtvw12=train_skipgram(training_pairs1, word_to_index1, vocab_size1, wtvw11, wtvw12, 32, 0.001, 1000)
             wtvw21, wtvw22=train_skipgram(training_pairs2, word_to_index2, vocab_size2, wtvw21, wtvw22, 32, 0.001, 1000)
-
             wtv_inp_np=[]
             for k in range(len(inp1)):
                 if inp1[k]=='PAD':
@@ -170,14 +165,6 @@ if run_train:
                 y_k=wtv_out_np[k]
                 out, norml, real=forward(x_k, pw, pb, inset, outset)
                 pw, pb = backward(x_k, out, y_k, pw, pb, 0.0001, norml, real)
-
-            wtv_inp_np=[get_embedding(inp1[k], word_to_index1, wtvw11) for k in range(len(inp1))]
-            wtv_out_np=[get_embedding(inp2[k], word_to_index2, wtvw21) for k in range(len(inp2))]
-            wtv_inp_p=mean_pool(wtv_inp_np)
-            wtv_out_p=mean_pool(wtv_out_np)
-            out, norml, real=forward(wtv_inp_p, pw, pb, inset, outset)
-            pw, pb=backward(wtv_inp_p, out, wtv_out_p, pw, pb, 0.0001, norml, real)
-
             with open('data/prunwb.pkl', 'wb') as file:
                 pickle.dump({'w': pw, 'b': pb}, file)
         if i%10==0:
@@ -188,17 +175,11 @@ if run_norm:
     training_pairs1=generate_training_pairs([tkinput], 4)
     wtvw11, wtvw12=initialize_weights(vocab_size1, 32)
     wtvw11, wtvw12=train_skipgram(training_pairs1, word_to_index1, vocab_size1, wtvw11, wtvw12, 32, 0.001, 1000)
-
     outs=[]
     for k in range(len(tkinput)):
         word_emb=get_embedding(tkinput[k], word_to_index1, wtvw11)
         out, norml, real=forward(word_emb, pw, pb, inset, outset)
         outs.append(out)
-
-    word_embs=[get_embedding(tkinput[k], word_to_index1, wtvw11) for k in range(len(tkinput))]
-    wtv_inp=mean_pool(word_embs) 
-    out, norml, real=forward(wtv_inp, pw, pb, inset, outset)
-    print(out)
 
     decoded=[]
     decoded_sim=[]
