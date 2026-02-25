@@ -1,5 +1,6 @@
 from persnn import forward, backward
-from wordtovec import build_vocab, generate_training_pairs, initialize_weights, train_skipgram, get_embedding, softmax
+from wordtovec import build_vocab, generate_training_pairs, initialize_weights, train_skipgram, get_embedding
+from pred_end import tokenize, build_bigram_model, predict_next_word
 from termcolor import colored
 from random import uniform
 import pickle
@@ -20,6 +21,7 @@ print(logo)
 
 is_prunwb_loaded=False
 is_uinput_loaded=False
+is_pred_data_loaded=False
 inset=[32, 256, 256, 256, 256, 64]
 outset=[256, 256, 256, 256, 64, 32]
 errors=[]
@@ -31,6 +33,20 @@ try:
     is_prunwb_loaded=True
 except:
     errors.append("prunwb")
+try:
+    with open('data/pred_model.pkl', 'rb') as file:
+        model=pickle.load(file)
+except:
+    try:
+        with open('data/pred_data.txt', 'r') as file:
+            text=file.read()
+        ttext=tokenize(text, True)
+        model=build_bigram_model(ttext)
+        with open('data/pred_model.pkl', 'wb') as file:
+            pickle.dump(model, file)
+        is_pred_data_loaded=True
+    except:
+        errors.append("pred_data")
 if len(errors)>0:
     print(f"you can't even read {errors} correctly, bitch")
 def get_zero_embedding(dim=32):
@@ -60,7 +76,7 @@ while run:
     if options=="1":
         exit()
     elif options=="help":
-        print(colored("1.exit\n2.load input\n3.create wb for prun\n4.show data\n5.run norm\n6.run train\n7.delete prun wb\n8.delete input\n9.clear", "grey"))
+        print(colored("1.exit\n2.load input\n3.create wb for prun\n4.show data\n5.run norm\n6.run train\n7.delete prun wb\n8.delete input\n9.reload pred_model\n10.clear", "grey"))
     elif options=="2":
         uinput=input("uinput> ")
         tkinput=uinput.split()
@@ -121,6 +137,13 @@ while run:
         tkinput=[]
         is_uinput_loaded=False
     elif options=="9":
+        with open('data/pred_data.txt', 'r') as file:
+            text=file.read()
+        ttext=tokenize(text, True)
+        model=build_bigram_model(ttext)
+        with open('data/pred_model.pkl', 'wb') as file:
+            pickle.dump(model, file)
+    elif options=="10":
         os.system('cls' if os.name == 'nt' else 'clear')
         print(logo)
 
@@ -180,7 +203,6 @@ if run_norm:
         word_emb=get_embedding(tkinput[k], word_to_index1, wtvw11)
         out, norml, real=forward(word_emb, pw, pb, inset, outset)
         outs.append(out)
-
     decoded=[]
     decoded_sim=[]
     for out_vec in outs:
@@ -188,4 +210,16 @@ if run_norm:
         decoded.append(word)
         decoded_sim.append(f"sim={sim:.3f}")
 
-    print(decoded, decoded_sim)
+    final_out=[]
+    for outtt in decoded:
+        final_out.append(outtt)
+        tout=tokenize(outtt, False)
+        cont_pred=True
+        while cont_pred:
+            pred_word=predict_next_word(tout, model)
+            if pred_word=="pad" or pred_word==None:
+                cont_pred=False
+            else:
+                final_out.append(pred_word)
+        cont_pred=True
+    print(final_out, "\n", decoded_sim)
