@@ -1,4 +1,4 @@
-# simple-chatbot-unfinished-
+# simple-chatbot
  word2vec skipgram + small neural net
 
  folder menagement should look like this(see raw file):
